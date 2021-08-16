@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "ЕГРП парсер";
+}
+
+<div class="text-center">
+    <h1 class="display-4">ЕГРП парсер</h1>
+</div>
+<div class="text-body">
+    <h3>Выберите файл html для загрузки</h3>
+    <form asp-action="Parse" asp-controller="EGRP" method="post" enctype="multipart/form-data">
+        <input type="file" name="uploadedFile" />
+        <br>
+        <br>
+        <input type="submit" value="Загрузить" />
+    </form>
+    div class="text-black-50">
+</div>
