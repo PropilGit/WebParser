@@ -53,7 +53,6 @@ namespace WebParser.Controllers
             return View("Result");
         }
 
-
         [NonAction]
         string ReadHtmlString(IFormFile uploadedFile)
         {
