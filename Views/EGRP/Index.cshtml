@@ -5,12 +5,23 @@
 <div class="text-center">
     <h1 class="display-4">ЕГРП парсер</h1>
 </div>
-<div class="text-body">
-    <h3>Выберите файл html для загрузки</h3>
-    <form asp-action="Parse" asp-controller="EGRP" method="post" enctype="multipart/form-data">
-        <input type="file" name="uploadedFile" />
-        <br>
-        <br>
-        <input type="submit" value="Загрузить" />
+<div class="text-center">
+    <br>
+    <br>
+    <br>
+    <br>
+    <h2>Формирование общей таблицы</h2>
+    <h5>Выберите файл html для загрузки</h5>
+    <form asp-action="Common" asp-controller="EGRP" method="post" enctype="multipart/form-data">
+        <input type="file" name="uploadedFile" /><input type="submit" value="Загрузить" />
+    </form>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h2>Формирование инвентарной описи</h2>
+    <h5>Выберите файл html для загрузки</h5>
+    <form asp-action="Inventory" asp-controller="EGRP" method="post" enctype="multipart/form-data">
+        <input type="file" name="uploadedFile" /><input type="submit" value="Загрузить" />
     </form>
 </div>

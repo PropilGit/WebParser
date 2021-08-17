@@ -1,0 +1,39 @@
+﻿@using WebParser.Models.EGRP
+
+@{
+    ViewData["Title"] = "Результат";
+}
+
+<div class="text-center">
+    <h5 class="font-weight-bold">Инвентарная опись недвижимости</h5>
+    <br>
+    <h7>@ViewBag.Message</h7>
+    <br>
+</div>
+<div class="text-center">
+    <table class="table-active" style="font-size:.6em" border="1">
+        
+        <tr class="font-weight-bold">
+            <td>@Estate.NumberTitle</td>
+            <td>Наименование</td>
+            <td>@Estate.KadastrNumTitle</td>
+        </tr>
+        @foreach (Estate es in ViewBag.Estates)
+        {
+            <tr>
+                <td>@es.Number</td>
+                <td>
+                    @{ 
+                        string text = "Нежилое " + es.Name + ", с кадастровым номером " + es.KadastrNum + ", по адресу " + es.Address;
+                        if (es.Area != "") text += ", площадью " + es.Area;
+                    }
+                
+                    @text
+                </td>
+                <td>@es.KadastrNum</td>
+            </tr>
+        }
+    </table>
+    <br>
+    <a href="~/EGRP/Index">назад</a>
+</div>
