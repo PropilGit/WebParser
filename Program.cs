@@ -26,6 +26,7 @@ namespace WebParser
                 webBuilder.ConfigureKestrel(kes =>
                 {
                     kes.Listen(IPAddress.Any, 48655);
+                    kes.Listen(IPAddress.Any, 48656);
                 });
 
 
