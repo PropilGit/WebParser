@@ -7,7 +7,7 @@ namespace WebParser.Models.EGRP
     public class Estate
     {
         public int Number { get; private set; }
-        public static string NumberTitle = "№ п/п";
+        public static string NumberTitle = "№ п/п";//!
 
         public string KadastrNum { get; private set; }
         public static string KadastrNumTitle = "Кадастровый (или условный) номер объекта";

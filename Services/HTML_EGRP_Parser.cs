@@ -1,17 +1,41 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebParser.Models.EGRP;
 
 namespace WebParser.Services
 {
-    public class EGRPParser
+    public class HTML_EGRP_Parser : EGRP_Parser, IEGRP_Parser
     {
+        public (List<Estate>, string) Parse(IFormFile uploadedFile)
+        {
+            try
+            {
+                string html = ReadString(uploadedFile, "text/html");
+                if (html == null) return (null, "Ошибка загрузки файла");
 
-        public static IHtmlCollection<IElement> GetElements(string html, string selector)
+                // считывание строк
+                var rows = GetElements(html, "table.t tbody tr");
+                if (rows == null) return (null, "Ошибка чтения файла");
+
+                // парсинг списка имушества
+                List<Estate> estates = ParseAllEstates(rows);
+                if (estates == null) return (null, "Ошибка парсинга файла");
+
+                return (estates, "Парсинг завершился успешно");
+            }
+            catch (Exception)
+            {
+                return (null, "Непридвиденная ошибка");
+            }
+        }
+
+        IHtmlCollection<IElement> GetElements(string html, string selector)
         {
             try
             {
@@ -26,7 +50,7 @@ namespace WebParser.Services
             }
         }
 
-        public static List<Estate> ParseAllEstates(IHtmlCollection<IElement> rows)
+        List<Estate> ParseAllEstates(IHtmlCollection<IElement> rows)
         {
             try
             {
@@ -61,7 +85,7 @@ namespace WebParser.Services
             }
         }
 
-        public static Estate ParseSingleEstate(int estateIndex, IEnumerable<IElement> rows)
+        Estate ParseSingleEstate(int estateIndex, IEnumerable<IElement> rows)
         {
             try
             {

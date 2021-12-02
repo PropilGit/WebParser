@@ -20,6 +20,7 @@ namespace WebParser.Controllers
         [HttpPost]
         public IActionResult Common(IFormFile uploadedFile)
         {
+            /*
             //получение списка объектов недвижимости
             List<Estate> estates = Parse(uploadedFile);
             if (estates == null) return View("Error");
@@ -30,80 +31,49 @@ namespace WebParser.Controllers
 
             ViewBag.Estates = estates;
             return View();
+            */
+            return Parse(uploadedFile, View());
         }
 
         [HttpPost]
         public IActionResult Inventory(IFormFile uploadedFile)
         {
-            //получение списка объектов недвижимости
-            List<Estate> estates = Parse(uploadedFile);
-            if (estates == null) return View("Error");
+            return Parse(uploadedFile, View());            
+        }
 
-            // вывод данных
-            if (estates.Contains(Estate.ErrorEstate)) ViewBag.Message = "В ходе парсинга возникли ошибки! Полученная таблица содержит некорректные значения!";
-            else ViewBag.Message = "Парсинг завершился успешно";
 
-            ViewBag.Estates = estates;
-            return View();
+        [NonAction]
+        public IEGRP_Parser CheckFile(IFormFile uploadedFile)
+        {
+            if (uploadedFile.ContentType == "text/html") return new HTML_EGRP_Parser();
+            else if (uploadedFile.ContentType == "text/xml") return new XML_EGRP_Parser();
+            else return null;
         }
 
         [NonAction]
-        public List<Estate> Parse(IFormFile uploadedFile)
+        public ViewResult Parse(IFormFile uploadedFile, ViewResult okViewResult)
         {
             try
             {
-                //получение файла
-                string html = ReadHtmlString(uploadedFile);
-                if (html == null)
-                {
-                    ViewBag.ErrMessage = "Ошибка загрузки файла";
-                    return null;
-                }
+                IEGRP_Parser parser = CheckFile(uploadedFile);
+                (List<Estate>, string) result = parser.Parse(uploadedFile);
+                List<Estate> estates = result.Item1;
+                ViewBag.Message = result.Item2;
 
-                // считывание строк
-                var rows = EGRPParser.GetElements(html, "table.t tbody tr");
-                if (rows == null)
-                {
-                    ViewBag.ErrMessage = "Ошибка чтения файла";
-                    return null;
-                }
+                if (estates == null) return View("Error");
+                if (estates.Contains(Estate.ErrorEstate)) ViewBag.Message = "В ходе парсинга возникли ошибки! Полученная таблица содержит некорректные значения!";
+                ViewBag.Estates = estates;
 
-                // парсинг списка имушества
-                List<Estate> estates = EGRPParser.ParseAllEstates(rows);
-                if (estates == null)
-                {
-                    ViewBag.ErrMessage = "Ошибка парсинга файла";
-                    return null;
-                }
+                return okViewResult;
+                //if(parser == null) return(null, "Неверный формат файла");
+                //return parser.Parse(uploadedFile);
 
-                return estates;
             }
             catch (Exception)
             {
-                ViewBag.ErrMessage = "Непридвиденная ошибка";
-                return null;
+                ViewBag.Message = "Непридвиденная ошибка";
+                return View("Error");
             }
-        }
-
-        [NonAction]
-        string ReadHtmlString(IFormFile uploadedFile)
-        {
-            try
-            {
-                if (uploadedFile == null || !uploadedFile.FileName.Contains(".html"))
-                {
-                    return null;
-                }
-
-                var stream = uploadedFile.OpenReadStream();
-                StreamReader reader = new StreamReader(stream);
-                return reader.ReadToEnd();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-            
         }
     }
 }
